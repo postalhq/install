@@ -57,7 +57,12 @@ config:
   web_server:
     default_bind_address: 0.0.0.0
 
+# openssl genrsa -out path/to/signing.key 2018
+signingKey: |
+  # paste key here
+
 web:
+  replicas: 1
   ingress:
     enabled: true
     className: nginx
@@ -73,7 +78,12 @@ web:
       - secretName: postal-web-tls
         hosts:
           - example.com
+          
+smtp: 
+  replicas: 1
+  service:
+    type: LoadBalancer
+    loadBalancerIP: 
 
-# openssl genrsa -out path/to/signing.key 2018
-signingKey: |
-  # paste key here
+worker: 
+  replicas: 1

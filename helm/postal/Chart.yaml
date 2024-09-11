@@ -1,3 +1,4 @@
+apiVersion: v2
 name: postal
 version: 1.0.0
 appVersion: 3.3.4

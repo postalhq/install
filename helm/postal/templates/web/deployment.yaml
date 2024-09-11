@@ -5,7 +5,7 @@ metadata:
   labels:
     app: {{ template "postal.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: postal
+    component: web
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
@@ -14,7 +14,7 @@ spec:
       app: {{ template "postal.name" . }}
       component: web
   # at the moment, we only support one replica
-  replicas: 1
+  replicas: {{ .Values.web.replicas }}
   strategy:
     type: Recreate
   template:

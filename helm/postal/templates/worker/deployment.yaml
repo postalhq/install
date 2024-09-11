@@ -13,7 +13,7 @@ spec:
     matchLabels:
       app: {{ template "postal.name" . }}
       component: worker
-  replicas: 1
+  replicas: {{ .Values.worker.replicas }}
   strategy:
     type: Recreate
   template:
