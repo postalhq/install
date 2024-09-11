@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "postal.fullname" . }}-worker
+  labels:
+    app: {{ template "postal.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: worker
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "postal.name" . }}
+      component: worker
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: {{ template "postal.name" . }}
+        component: worker
+      annotations:
+        checksum/secret: {{ include (print .Template.BasePath "/secret.yaml") . | sha256sum }}  # Checksum annotation
+    spec:
+      containers:
+      - name: worker
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        imagePullPolicy: "{{ .Values.imagePullPolicy }}"
+        command: ["postal", "worker"]
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        volumeMounts:
+        - name: config
+          mountPath: /config/
+          readOnly: true
+      volumes:
+      - name: config
+        secret:
+          secretName: {{ template "postal.fullname" . }}

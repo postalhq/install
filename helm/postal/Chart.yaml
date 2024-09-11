@@ -1,0 +1,10 @@
+name: postal
+version: 1.0.0
+appVersion: 3.3.4
+home: https://github.com/postalserver/postal
+description: A complete and fully featured mail server
+keywords:
+  - postal
+sources:
+  - https://github.com/postalserver/install
+engine: gotpl

@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "postal.fullname" . }}-web
+  labels:
+    app: {{ template "postal.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: postal
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "postal.name" . }}
+      component: web
+  # at the moment, we only support one replica
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: {{ template "postal.name" . }}
+        component: web
+      annotations:
+        checksum/secret: {{ include (print .Template.BasePath "/secret.yaml") . | sha256sum }}  # Checksum annotation
+    spec:
+      containers:
+      - name: web
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        imagePullPolicy: "{{ .Values.imagePullPolicy }}"
+        command: ["postal", "web-server"]
+        resources:
+{{ toYaml .Values.resources | indent 10 }}          
+        ports:
+        - name: web
+          containerPort: 5000
+        volumeMounts:
+        - name: config
+          mountPath: /config/
+          readOnly: true
+      volumes:
+      - name: config
+        secret:
+          secretName: {{ template "postal.fullname" . }}
