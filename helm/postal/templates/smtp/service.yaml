@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "postal.fullname" . }}-smtp
+  labels:
+    app: {{ template "postal.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: postal
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  selector:
+    app: {{ template "postal.name" . }}
+    component: smtp
+  loadBalancerIP: {{ .Values.smtp.service.loadBalancerIP }}    
+  ports:
+  - name: smtp
+    port: 25
+    targetPort: smtp
+  type: {{ .Values.smtp.service.type }}

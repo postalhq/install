@@ -1,0 +1,89 @@
+image: ghcr.io/postalserver/postal
+imageTag: "3.3.4"
+imagePullPolicy: Always
+
+resources: {}
+
+config:
+  version: 2
+
+  postal:
+    web_hostname: example.com
+    web_protocol: https
+    smtp_hostname: example.com
+
+  main_db:
+    host: mariadb.default.svc.cluster.local
+    username: root
+    password: 
+    database: postal
+
+  message_db:
+    host: mariadb.default.svc.cluster.local
+    username: root
+    password: 
+    database: postal_messages
+
+  smtp_server:
+    default_bind_address: "::"
+
+  dns:
+    # Specify the DNS records that you have configured. Refer to the documentation at
+    # https://github.com/atech/postal/wiki/Domains-&-DNS-Configuration for further
+    # information about these.
+    mx_records:
+      - mx.example.com
+    spf_include: spf.example.com
+    return_path_domain: rp.example.com
+    route_domain: routes.example.com
+    track_domain: track.example.com
+
+  smtp:
+    # Specify an SMTP server that can be used to send messages from the Postal management
+    # system to users. You can configure this to use a Postal mail server once the
+    # your installation has been set up.
+    host: 127.0.0.1
+    port: 2525
+    username: # Complete when Postal is running and you can
+    password: # generate the credentials within the interface.
+    from_name: Postal
+    from_address: example.com
+
+  rails:
+    # This is generated automatically by the config initialization. It should be a random
+    # string unique to your installation.
+    secret_key: f1e4a061c0f3894a65d0335ce9d56ffa16c8b4d8dd2a101d875f703358790fc69b5a27f854dfff895b6d86cb9994ed8506e0cdec1a2cd5a1c840bf98b47431cd08de05e33a12f53219dcb795e4d72685647b40eb707555c242a1facc40b19c4cd3a35b0ca91507a672d3f7bce48a0dad81c930320001b22ba6fdc468f9a8ce08
+
+  web_server:
+    default_bind_address: 0.0.0.0
+
+# openssl genrsa -out path/to/signing.key 2018
+signingKey: |
+  # paste key here
+
+web:
+  replicas: 1
+  ingress:
+    enabled: true
+    className: nginx
+    annotations:
+      kubernetes.io/tls-acme: "true"
+    labels: {}
+    hosts:
+      - host: example.com
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls:
+      - secretName: postal-web-tls
+        hosts:
+          - example.com
+          
+smtp: 
+  replicas: 1
+  service:
+    type: LoadBalancer
+    loadBalancerIP: 
+
+worker: 
+  replicas: 1
