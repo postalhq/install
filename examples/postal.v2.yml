@@ -45,7 +45,7 @@ rabbitmq:
 
 dns:
   # Specify the DNS records that you have configured. Refer to the documentation at
-  # https://docs.postalserver.io/install/dns-configuration for further information
+  # https://docs.postalserver.io/getting-started/dns-configuration for further information
   # about these.
   mx_records:
     - mx.postal.yourdomain.com
