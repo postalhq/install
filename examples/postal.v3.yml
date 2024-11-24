@@ -22,7 +22,7 @@ smtp_server:
 
 dns:
   # Specify the DNS records that you have configured. Refer to the documentation at
-  # https://github.com/atech/postal/wiki/Domains-&-DNS-Configuration for further
+  # https://docs.postalserver.io/getting-started/dns-configuration for further
   # information about these.
   mx_records:
     - mx.postal.yourdomain.com
